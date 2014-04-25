@@ -16,6 +16,7 @@ if (!window.cancelAnimationFrame) {
                                  window.clearTimeout);
 }
 
+window.animate = {};
 window.animate.captureMouse = function (element) {
   var mouse = {x: 0, y: 0, prevX: 0, prevY: 0, event: null, move: false},
       body_scrollLeft = document.body.scrollLeft,
@@ -25,7 +26,7 @@ window.animate.captureMouse = function (element) {
       offsetLeft = element.offsetLeft,
       offsetTop = element.offsetTop;
   
-  element.addEventListener('mouseenter', function(event) {
+  element.addEventListener('mouseover', function(event) {
     var x, y;
     if (event.pageX || event.pageY) {
       x = event.pageX;
@@ -63,6 +64,7 @@ window.animate.captureMouse = function (element) {
   
   return mouse;
 }
+
 
 window.animate.captureTouch = function (element) {
   var touch = {x: null, y: null, prevX: 0, prevY: 0, 
