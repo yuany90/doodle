@@ -1,74 +1,73 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
         <title>OilPaint</title>
-		<script src = "jquery-1.9.1.min.js"></script>
+	<script src = "jquery-1.9.1.min.js"></script>
         <script src = 'canvas2image.js'></script>
-		<script src = 'base64.js'></script>
-		<script src = 'animate.js'></script>
-		<script src = "jquery.mCustomScrollbar.concat.min.js"></script>
-		<link href="jquery.mCustomScrollbar.css" rel="stylesheet" />
+	<script src = 'base64.js'></script>
+	<script src = 'animate.js'></script>
+	<script src = "jquery.mCustomScrollbar.concat.min.js"></script>
+	<link href="jquery.mCustomScrollbar.css" rel="stylesheet" />
         <style>
-			*{
-				margin: 0;
-				padding: 0;
+		*{
+			margin: 0;
+			padding: 0;
+	 		}
+	 	body {
+			overflow:hidden;
+			background:black;
+			text-align:center;
 			}
-            body {
-		      overflow:hidden;
-		      background:black;
-			  text-align:center;
-            }
-			li{
-				list-style-type:none;
+		li{
+			list-style-type:none;
 			}
-            canvas {
-				margin-top:10px;
-				float:left;
-            }
-			#left{
-				float:left;
+            	canvas {
+			margin-top:10px;
+			float:left;
 			}
-			#right{
-				overflow-y:auto;
-				overflow-x:hidden;
-				float:right;
-				height:500px;
+		#left{
+			float:left;
 			}
-			.image{
-				margin: 10px 10px;
+		#right{
+			overflow-y:auto;
+			overflow-x:hidden;
+			float:right;
+			height:500px;
 			}
-			#addImg{
-				color:skyblue;
-				font-family: "Arial"; 
+		.image{
+			margin: 10px 10px;
 			}
-			#saveclear{
-				position:absolute;
-				left: 200px;
-				top: 0px;
+		#addImg{
+			color:skyblue;
+			font-family: "Arial"; 
+			}
+		#saveclear{
+			position:absolute;
+			left: 200px;
+			top: 0px;
 			}
         </style>
     </head>
     <body>
-		<div id='saveclear'>
-			<li><img onclick="save()" src = "save.png"/></li>
-			<li><img onclick="clearCanvas()" src = "clear.png"/></li>
-		</div>
-		<div id='left'>
-			<li><img class = "image" onclick="setBrush('brush1')" src = "brush1.png"/></li>
-			<li><img class = "image" onclick="setBrush('brush2')" src = "brush2.png"/></li>
-			<li><img class = "image" onclick="setBrush('brush3')" src = "brush3.png"/></li>
-		</div>
-
-		<canvas id="buffer" class="buffer" width="600" height="600" style="display: none;"></canvas>
+	<div id='saveclear'>
+		<li><img onclick="save()" src = "save.png"/></li>
+		<li><img onclick="clearCanvas()" src = "clear.png"/></li>
+	</div>
+	<div id='left'>
+		<li><img class = "image" onclick="setBrush('brush1')" src = "brush1.png"/></li>
+		<li><img class = "image" onclick="setBrush('brush2')" src = "brush2.png"/></li>
+		<li><img class = "image" onclick="setBrush('brush3')" src = "brush3.png"/></li>
+	</div>
+	<canvas id="buffer" class="buffer" width="600" height="600" style="display: none;"></canvas>
         <canvas id="output" width="600" height="600"></canvas>
-		<div id = 'right'>
-			<li><img class = "image" onclick="reset('cat')" id="cat" src = "cat.jpg"  /></li>
-			<li><img class = "image" onclick="reset('Ocean')" id="Ocean" src = "Ocean.jpg" /></li>
-			<li><img class = "image" onclick="reset('fall')" id="fall" src = "fall.jpg" /></li>
-			<li><img class = "image" onclick="reset('lake')" id="lake" src = "lake.jpg"/></li>
-			<li><img class = "image" onclick="reset('download')" id="download" src = "download.jpg" /></li>
+	<div id = 'right'>
+		<li><img class = "image" onclick="reset('cat')" id="cat" src = "cat.jpg"  /></li>
+		<li><img class = "image" onclick="reset('Ocean')" id="Ocean" src = "Ocean.jpg" /></li>
+		<li><img class = "image" onclick="reset('fall')" id="fall" src = "fall.jpg" /></li>
+		<li><img class = "image" onclick="reset('lake')" id="lake" src = "lake.jpg"/></li>
+		<li><img class = "image" onclick="reset('download')" id="download" src = "download.jpg" /></li>
 			
 <!-- 			<li id = "addImg">
 				<h3>Add More</h3>
@@ -77,368 +76,351 @@
 					<label for="addLink" onclick="addimg()">Add</label> 
 				</p>
 			</li> -->
-		</div>
-		<div style="clean:both"></div>
+	</div>
+	<div style="clean:both"></div>
 
         <script type="text/javascript">
             var buffer = document.getElementById("buffer"),
-			    output = document.getElementById("output"),
-				leftDiv = document.getElementById("left");
-				rightDiv = document.getElementById("right");
-				images = document.getElementsByClassName("image"),
-				imageObj = document.getElementById("cat"),
-				// addImg = document.getElementById("addImg"),
-				// addLink = document.getElementById("addLink"),
+		output = document.getElementById("output"),
+		leftDiv = document.getElementById("left");
+		rightDiv = document.getElementById("right");
+		images = document.getElementsByClassName("image"),
+		imageObj = document.getElementById("cat"),
+		// addImg = document.getElementById("addImg"),
+		// addLink = document.getElementById("addLink"),
 				
-				buffContext = buffer.getContext('2d'),
-				outContext = output.getContext('2d'),
-				width = 0, height = 0, margin = 20,
-				ratio = 0, buffData = '', outData = '',
-				brush = 'brush1', customId = 0,
-				brushSize = 50,
-				brushWidth = 5,
-				tolerance = 20,
+		buffContext = buffer.getContext('2d'),
+		outContext = output.getContext('2d'),
+		// mouse = animate.captureMouse('output'),
+		// touch = animate.captureMouse('output'),
+		width = 0, height = 0, margin = 20,
+		ratio = 0, buffData = '', outData = '',
+		brush = 'brush1', customId = 0,
+		brushSize = 50,
+		brushWidth = 5,
+		tolerance = 20,
 				
-				
-				brush1 = {
-					streakAmount: 7,
-					brushSizeMax: 70,
-					brushSizeMin: 10,
-					brushWidthMax: 7,
-					brushWidthMin: 0,
-					toleranceMax: 50,
-					toleranceMin: 2,
-					rStrokeSize: 4},
+		brush1 = {
+			streakAmount: 7,
+			brushSizeMax: 70,
+			brushSizeMin: 10,
+			brushWidthMax: 7,
+			brushWidthMin: 0,
+			toleranceMax: 50,
+			toleranceMin: 2,
+			rStrokeSize: 4},
 					
-				brush2 = {
-					streakAmount: 30,
-					brushSizeMax: 70,
-					brushSizeMin: 10,
-					brushWidthMax: 7,
-					brushWidthMin: 0,
-					toleranceMax: 50,
-					toleranceMin: 2,
-					rStrokeSize: 1},
+		brush2 = {
+			streakAmount: 30,
+			brushSizeMax: 70,
+			brushSizeMin: 10,
+			brushWidthMax: 7,
+			brushWidthMin: 0,
+			toleranceMax: 50,
+			toleranceMin: 2,
+			rStrokeSize: 1},
 				
-				brush3 = {
-					streakAmount: 30,
-					brushSizeMax: 50,
-					brushSizeMin: 10,
-					brushWidthMax:30,
-					brushWidthMin: 0,
-					toleranceMax: 50,
-					toleranceMin: 2,
-					rStrokeSize: 1},
-				mouse = {
-					'x':undefined,
-					'y':undefined,
-					'prevX':undefined,
-					'prevY':undefined,
-					'pressed':false,
-					'moved':false
+		brush3 = {
+			streakAmount: 30,
+			brushSizeMax: 50,
+			brushSizeMin: 10,
+			brushWidthMax:30,
+			brushWidthMin: 0,
+			toleranceMax: 50,
+			toleranceMin: 2,
+			rStrokeSize: 1},
+			
+		mouse = {
+			'x':undefined,
+			'y':undefined,
+			'prevX':undefined,
+			'prevY':undefined,
+			'moved':false
                 };
-				
 
-            output.onmousedown = function(){
-				//autoFill();
-				//savecanvasfile();
-                mouse.pressed = true;
-            }
-
-            output.onmouseup = function(){
-                mouse.pressed = false;
-            }
-
-            output.onmousemove = function(event){
-                mouse.moved = true;
-                mouse.prevX = mouse.x;
-                mouse.prevY = mouse.y;
-				
-				var x, y,
-				  body_scrollLeft = document.body.scrollLeft,
-				  element_scrollLeft = document.documentElement.scrollLeft,
-				  body_scrollTop = document.body.scrollTop,
-				  element_scrollTop = document.documentElement.scrollTop,
-				  offsetLeft = output.offsetLeft,
-				  offsetTop = output.offsetTop;
-				if (event.pageX || event.pageY) {
-				  x = event.pageX;
-				  y = event.pageY;
-				} else {
-				  x = event.clientX + body_scrollLeft + element_scrollLeft;
-				  y = event.clientY + body_scrollTop + element_scrollTop;
-				}
+            	output.onmousemove = function(event){
+                	mouse.moved = true;
+                	mouse.prevX = mouse.x;
+        		mouse.prevY = mouse.y;
+			var x, y,
+			body_scrollLeft = document.body.scrollLeft,
+			element_scrollLeft = document.documentElement.scrollLeft,
+			body_scrollTop = document.body.scrollTop,
+			element_scrollTop = document.documentElement.scrollTop,
+			offsetLeft = output.offsetLeft,
+			offsetTop = output.offsetTop;
+			if (event.pageX || event.pageY) {
+				x = event.pageX;
+				y = event.pageY;
+			} else {
+				x = event.clientX + body_scrollLeft + element_scrollLeft;
+				y = event.clientY + body_scrollTop + element_scrollTop;
+			}
 				x -= offsetLeft;
 				y -= offsetTop;
-
-                mouse.x = x;
-                mouse.y = y;
-				if(!$('#saveclear').isAnimated){
-					if( mouse.y < 100){
-						if((Math.abs(mouse.prevX - mouse.x) < 5
-						&& mouse.prevY - mouse.y > 10) || (mouse.y <= 1 && mouse.x < 150))
-						$('#saveclear').slideDown(500);
-					} else {
-						$('#saveclear').slideUp(500);
-					}
+	                mouse.x = x;
+	                mouse.y = y;
+			if(!$('#saveclear').isAnimated){
+				if( mouse.y < 100){
+					if((Math.abs(mouse.prevX - mouse.x) < 5
+					&& mouse.prevY - mouse.y > 10) || (mouse.y <= 1 && mouse.x < 150))
+					$('#saveclear').slideDown(500);
+				} else {
+					$('#saveclear').slideUp(500);
 				}
-            }
-			
-			function addimg(){
-				var addli = document.createElement("li");
-				var img = "<img class = \"image\" onclick=\"reset('img"+ customId 
+			}
+		}
+            
+		function addimg(){
+			var addli = document.createElement("li");
+			var img = "<img class = \"image\" onclick=\"reset('img"+ customId 
 				+"')\" id=\"img" + customId + "\" src = \""+ addLink.value +"\"/>";
 				//alert(img);
-				addli.innerHTML  = img;
-				rightDiv.insertBefore(addli, addImg);
-			}
+			addli.innerHTML  = img;
+			rightDiv.insertBefore(addli, addImg);
+		}
 			
-			function setBrush(brushId){
-				brush = brushId;
-			}
+		function setBrush(brushId){
+			brush = brushId;
+		}
 
-            function drawFrame () {
-				window.requestAnimationFrame(drawFrame, output);	
-                if(mouse.moved){
-                    mouse.moved = false;
-                    drawBrush();
-                } 
-            }
+		function drawFrame () {
+			window.requestAnimationFrame(drawFrame, output);	
+                	if(mouse.moved){
+                    		mouse.moved = false;
+                    		drawBrush();
+                	} 
+                }
 			
-			function drawBrush1(dDiff, color, x, y){
-				brushSize = Math.min(Math.max(dDiff * 2, brush1.brushSizeMin), brush1.brushSizeMax);
-				brushWidth = Math.min(brushSize/2, brush1.brushWidthMax);
-				tolerance = Math.min(Math.max(dDiff, brush1.toleranceMin), brush1.toleranceMax);
-				// outContext.strokeStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
-                // outContext.fillStyle = outContext.strokeStyle; 
-				var x1 = x, y1 = y, limit = 100;
-				var x2, y2, x3, y3, x4, y4;
-				do {
-                      x2 = x1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
-                      y2 = y1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
-				} while (!compareColor(color, x2, y2) && --limit>0);
-				do {
-                      x3 = x1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
-                      y3 = y1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
-				} while (!compareColor(color, x3, y3) && --limit>0);
-				do{
-                      x4 = x1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
-                      y4 = y1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
-				} while (!compareColor(color, x4, y4) && --limit>0);
+		function drawBrush1(dDiff, color, x, y){
+			brushSize = Math.min(Math.max(dDiff * 2, brush1.brushSizeMin), brush1.brushSizeMax);
+			brushWidth = Math.min(brushSize/2, brush1.brushWidthMax);
+			tolerance = Math.min(Math.max(dDiff, brush1.toleranceMin), brush1.toleranceMax);
+			// outContext.strokeStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+                	// outContext.fillStyle = outContext.strokeStyle; 
+			var x1 = x, y1 = y, limit = 100;
+			var x2, y2, x3, y3, x4, y4;
+			do {
+				x2 = x1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
+				y2 = y1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
+			} while (!compareColor(color, x2, y2) && --limit>0);
+			do {
+				x3 = x1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
+				y3 = y1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
+			} while (!compareColor(color, x3, y3) && --limit>0);
+			do{
+				x4 = x1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
+				y4 = y1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
+			} while (!compareColor(color, x4, y4) && --limit>0);
 				
-				brushWidth = Math.ceil(brushWidth * limit / 100.0);
+			brushWidth = Math.ceil(brushWidth * limit / 100.0);
 				
-				if (limit >= 0){
-					outContext.lineWidth = brush1.rStrokeSize;
-                    outContext.beginPath();
-                    outContext.moveTo(x1,y1);
-                    outContext.bezierCurveTo(x2,y2,x3,y3,x4,y4);
-                    outContext.stroke();
-					for (var i=0; i<brush1.streakAmount; i++){
-                        var _x1 = x1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        var _y1 = y1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        var _x2 = x2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        var _y2 = y2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        var _x3 = x3 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        var _y3 = y3 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        var _x4 = x4 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        var _y4 = y4 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-						if (compareColor(color, _x1, _y1) && compareColor(color, _x2, _y2)
-						&& compareColor(color, _x3, _y3) && compareColor(color, _x4, _y4)){
-						var _index = _x1 + (_y1 * width);
-						var _r = buffData.data[_index * 4];
-						var _g = buffData.data[_index * 4 + 1];
-						var _b = buffData.data[_index * 4 + 2];
-						outContext.strokeStyle = 'rgb(' + _r + ',' + _g + ',' + _b + ')';
-                        outContext.beginPath();
-                        outContext.moveTo(_x1,_y1);
-                        outContext.bezierCurveTo(_x2,_y2,_x3,_y3,_x4,_y4);
-						outContext.closePath();
-                        outContext.stroke();
-						}
-                    }
-				} else {
-					outContext.beginPath();
-					outContext.arc(x, y, 2, 0, (Math.PI * 2), true);
-					outContext.closePath();
-					outContext.fill();
-				}
-			}
-			
-			function drawBrush2(dDiff, color, x, y){
-				brushSize = Math.min(Math.max(dDiff * 2, brush2.brushSizeMin), brush2.brushSizeMax);
-				brushWidth = Math.min(brushSize/2, brush2.brushWidthMax);
-				tolerance = Math.min(Math.max(dDiff, brush2.toleranceMin), brush2.toleranceMax);
-				// outContext.strokeStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
-                // outContext.fillStyle = outContext.strokeStyle; 
-				var x1 = x, y1 = y, limit = 100;
-				var x2, y2, x3, y3;
-				do {
-                      x2 = x1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
-                      y2 = y1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
-				} while (!compareColor(color, x2, y2) && --limit>0);
-				brushWidth = Math.ceil(brushWidth * limit / 100.0);
-				if (limit >= 0){
-					outContext.lineWidth = brush2.rStrokeSize;
-					for (var i=0; i<brush2.streakAmount; i++){
-						var _x1 = x1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        var _y1 = y1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        var _x2 = x2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        var _y2 = y2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-
-						if(compareColor(color, _x1, _y1)
-						&& compareColor(color, _x2, _y2)){
-						var _index = _x1 + (_y1 * width);
-						var _r = buffData.data[_index * 4];
-						var _g = buffData.data[_index * 4 + 1];
-						var _b = buffData.data[_index * 4 + 2];
-						outContext.strokeStyle = 'rgb(' + _r + ',' + _g + ',' + _b + ')';
-						outContext.beginPath();
-                        outContext.moveTo(_x1,_y1);
-                        outContext.lineTo(_x2,_y2);
-						outContext.closePath();
-                        outContext.stroke();
-						}
-					}
-				} else {
-					outContext.beginPath();
-					outContext.arc(x, y, 2, 0, (Math.PI * 2), true);
-					outContext.closePath();
-					outContext.fill();
-				}
-			}
-			
-			function drawBrush3(dDiff, color, x, y){
-				brushSize = Math.min(Math.max(dDiff * 2, brush2.brushSizeMin), brush2.brushSizeMax);
-				tolerance = 10;
-				var pointAmount = 5 + Math.ceil(Math.random() * 5);
-				for(var i = 0; i < pointAmount; i++){
-					var _x = x + Math.floor(Math.random() * brushSize* 2 - brushSize);
-					var _y = y + Math.floor(Math.random() * brushSize* 2 - brushSize);
-					var _index = _x + (_y * width);
+			if (limit >= 0){
+				outContext.lineWidth = brush1.rStrokeSize;
+                    		outContext.beginPath();
+                    		outContext.moveTo(x1,y1);
+                    		outContext.bezierCurveTo(x2,y2,x3,y3,x4,y4);
+                    		outContext.stroke();
+				for (var i=0; i<brush1.streakAmount; i++){
+                        		var _x1 = x1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+                        		var _y1 = y1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+                        		var _x2 = x2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+                        		var _y2 = y2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+                			var _x3 = x3 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+                        		var _y3 = y3 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+                        		var _x4 = x4 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+                        		var _y4 = y4 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					if (compareColor(color, _x1, _y1) && compareColor(color, _x2, _y2)
+					&& compareColor(color, _x3, _y3) && compareColor(color, _x4, _y4)){
+					var _index = _x1 + (_y1 * width);
 					var _r = buffData.data[_index * 4];
 					var _g = buffData.data[_index * 4 + 1];
 					var _b = buffData.data[_index * 4 + 2];
-					var _radius = 2 + Math.floor(Math.random() * 4);
-					color = {'r':_r, 'g':_g, 'b':_b};
-					if(!compareColor(color, _x + 3, _y + 3)){
-						_radius = 2;
-					}
-					outContext.fillStyle = 'rgb(' + _r + ',' + _g + ',' + _b + ')';
-					outContext.beginPath();
-					outContext.arc(_x, _y, _radius, 0, (Math.PI * 2), true);
+					outContext.strokeStyle = 'rgb(' + _r + ',' + _g + ',' + _b + ')';
+                        		outContext.beginPath();
+                        		outContext.moveTo(_x1,_y1);
+                        		outContext.bezierCurveTo(_x2,_y2,_x3,_y3,_x4,_y4);
 					outContext.closePath();
-					outContext.fill();
-				}
+                        		outContext.stroke();
+					}
+                    		}
+			} else {
+				outContext.beginPath();
+				outContext.arc(x, y, 2, 0, (Math.PI * 2), true);
+				outContext.closePath();
+				outContext.fill();
 			}
+		}
 			
-            function drawBrush(){
-                var xDiff = mouse.x-mouse.prevX,
-                    yDiff = mouse.y-mouse.prevY,
-				    dDiff = Math.floor(Math.sqrt(xDiff * xDiff + yDiff * yDiff)),
-
-					x = Math.floor(mouse.x),
-					y = Math.floor(mouse.y),
-					index = x + (y * width),
-					r = buffData.data[index * 4],
-					g = buffData.data[index * 4 + 1],
-					b = buffData.data[index * 4 + 2],
-					color = {'r':r, 'g':g, 'b':b};
+		function drawBrush2(dDiff, color, x, y){
+			brushSize = Math.min(Math.max(dDiff * 2, brush2.brushSizeMin), brush2.brushSizeMax);
+			brushWidth = Math.min(brushSize/2, brush2.brushWidthMax);
+			tolerance = Math.min(Math.max(dDiff, brush2.toleranceMin), brush2.toleranceMax);
+			// outContext.strokeStyle = 'rgb(' + color.r + ',' + color.g + ',' + color.b + ')';
+                	// outContext.fillStyle = outContext.strokeStyle; 
+			var x1 = x, y1 = y, limit = 100;
+			var x2, y2, x3, y3;
+			do {
+	                      x2 = x1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
+	                      y2 = y1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
+			} while (!compareColor(color, x2, y2) && --limit>0);
+			brushWidth = Math.ceil(brushWidth * limit / 100.0);
+			if (limit >= 0){
+				outContext.lineWidth = brush2.rStrokeSize;
+				for (var i=0; i<brush2.streakAmount; i++){
+					var _x1 = x1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+		                        var _y1 = y1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+		                        var _x2 = x2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+		                        var _y2 = y2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					if(compareColor(color, _x1, _y1)
+					&& compareColor(color, _x2, _y2)){
+					var _index = _x1 + (_y1 * width);
+					var _r = buffData.data[_index * 4];
+					var _g = buffData.data[_index * 4 + 1];
+					var _b = buffData.data[_index * 4 + 2];
+					outContext.strokeStyle = 'rgb(' + _r + ',' + _g + ',' + _b + ')';
+					outContext.beginPath();
+          				outContext.moveTo(_x1,_y1);
+                        		outContext.lineTo(_x2,_y2);
+					outContext.closePath();
+                        		outContext.stroke();
+					}
+				}
+			} else {
+				outContext.beginPath();
+				outContext.arc(x, y, 2, 0, (Math.PI * 2), true);
+				outContext.closePath();
+				outContext.fill();
+			}
+		}
+			
+		function drawBrush3(dDiff, color, x, y){
+			brushSize = Math.min(Math.max(dDiff * 2, brush2.brushSizeMin), brush2.brushSizeMax);
+			tolerance = 10;
+			var pointAmount = 5 + Math.ceil(Math.random() * 5);
+			for(var i = 0; i < pointAmount; i++){
+				var _x = x + Math.floor(Math.random() * brushSize* 2 - brushSize);
+				var _y = y + Math.floor(Math.random() * brushSize* 2 - brushSize);
+				var _index = _x + (_y * width);
+				var _r = buffData.data[_index * 4];
+				var _g = buffData.data[_index * 4 + 1];
+				var _b = buffData.data[_index * 4 + 2];
+				var _radius = 2 + Math.floor(Math.random() * 4);
+				color = {'r':_r, 'g':_g, 'b':_b};
+				if(!compareColor(color, _x + 3, _y + 3)){
+					_radius = 2;
+				}
+				outContext.fillStyle = 'rgb(' + _r + ',' + _g + ',' + _b + ')';
+				outContext.beginPath();
+				outContext.arc(_x, _y, _radius, 0, (Math.PI * 2), true);
+				outContext.closePath();
+				outContext.fill();
+			}
+		}
+		
+		function drawBrush(){
+                	var xDiff = mouse.x-mouse.prevX,
+                    	    yDiff = mouse.y-mouse.prevY,
+			    dDiff = Math.floor(Math.sqrt(xDiff * xDiff + yDiff * yDiff)),
+			    
+			    x = Math.floor(mouse.x),
+		       	    y = Math.floor(mouse.y),
+			    index = x + (y * width),
+			    r = buffData.data[index * 4],
+			    g = buffData.data[index * 4 + 1],
+			    b = buffData.data[index * 4 + 2],
+			    color = {'r':r, 'g':g, 'b':b};
 					
-				if(brush == 'brush1'){
-					drawBrush1(dDiff, color, x, y);
-				} else if(brush == 'brush2'){
-					drawBrush2(dDiff, color, x, y);
-				} else if(brush == 'brush3'){
-					drawBrush3(dDiff, color, x, y);
-				}
-            }
-			
-			function compareColor(color, x, y){
-				var index = x + (y*width);
-                var red = buffData.data[index*4];
-                var green = buffData.data[index*4+1];
-                var blue = buffData.data[index*4+2];
-				if(red <= color.r + tolerance && red >= color.r - tolerance
-				&& green <= color.g + tolerance && green >= color.g - tolerance
-				&& blue <= color.b +tolerance && blue >= color.b - tolerance
-				&& red + green + blue <= color.r + color.g + color.b + tolerance *2
-				&& red + green + blue >= color.r + color.g + color.b - tolerance *2){
-					return true;
-				} else {
-					return false;
-				}
+			if(brush == 'brush1'){
+				drawBrush1(dDiff, color, x, y);
+			} else if(brush == 'brush2'){
+				drawBrush2(dDiff, color, x, y);
+			} else if(brush == 'brush3'){
+				drawBrush3(dDiff, color, x, y);
 			}
+   		}
 			
-			function autoFill(){
-				outData = outContext.getImageData(0,0,buffer.width,buffer.height);
-				for(var i = 0; i < buffer.width; i++){
-					for(var j = 0; j < buffer.height; j++){
-						var index = i + (j*width);
-						if(outData.data[index*4] == 0 && outData.data[index*4 + 1] == 0 &&
-						outData.data[index*4+2] == 0){
-							outData.data[index*4] = buffData.data[index*4];
-							outData.data[index*4 + 1] = buffData.data[index*4 + 1];
-							outData.data[index*4 + 2] = buffData.data[index*4 + 2];
-						}
+		function compareColor(color, x, y){
+			var index = x + (y*width);
+                	var red = buffData.data[index*4];
+                	var green = buffData.data[index*4+1];
+                	var blue = buffData.data[index*4+2];
+			if(red <= color.r + tolerance && red >= color.r - tolerance
+			&& green <= color.g + tolerance && green >= color.g - tolerance
+			&& blue <= color.b +tolerance && blue >= color.b - tolerance
+			&& red + green + blue <= color.r + color.g + color.b + tolerance *2
+			&& red + green + blue >= color.r + color.g + color.b - tolerance *2){
+				return true;
+			} else {
+				return false;
+			}
+		}
+			
+		function autoFill(){
+			outData = outContext.getImageData(0,0,buffer.width,buffer.height);
+			for(var i = 0; i < buffer.width; i++){
+				for(var j = 0; j < buffer.height; j++){
+					var index = i + (j*width);
+					if(outData.data[index*4] == 0 && outData.data[index*4 + 1] == 0 &&
+					outData.data[index*4+2] == 0){
+						outData.data[index*4] = buffData.data[index*4];
+						outData.data[index*4 + 1] = buffData.data[index*4 + 1];
+						outData.data[index*4 + 2] = buffData.data[index*4 + 2];
 					}
 				}
-				outContext.putImageData(outData, 0, 0);
 			}
+			outContext.putImageData(outData, 0, 0);
+		}
+		
+		function save(){
+			var strDataURI = output.toDataURL();
+			Canvas2Image.saveAsPNG(output);
+		}
+		
+		function clearCanvas(){
+			outContext.clearRect(0, 0, buffer.width, buffer.height);
+		}
+		
+		function reset(id){
+			clearCanvas();
+			imageObj = document.getElementById(id);
+			buffContext.drawImage(imageObj,0,0,buffer.width,buffer.height);
+			buffData = buffContext.getImageData(0,0,buffer.width,buffer.height);
+		}
 			
-			function save(){
-				var strDataURI = output.toDataURL();
-				Canvas2Image.saveAsPNG(output);
+		function main() {
+			if(imageObj.height == 0 && imageObj.width == 0){
+				imageObj.height = "164";
+				imageObj.width = "219";
 			}
-			function clearCanvas(){
-				outContext.clearRect(0, 0, buffer.width, buffer.height);
+			ratio = imageObj.height*1.0/imageObj.width;
+			width = Math.floor(window.innerWidth * 0.62);
+			height = Math.floor(width * ratio);
+			leftDiv.width = window.innerWidth * 0.18 ;
+			rightDiv.width = leftDiv.width;
+			leftDiv.height = window.innerHeight;
+			rightDiv.height = window.innerHeight;
+			leftDiv.style.width = window.innerWidth * 0.19  + 'px';
+			rightDiv.style.width = leftDiv.width + 'px';
+			leftDiv.style.height = window.innerHeight + 'px';
+			rightDiv.style.height = window.innerHeight + 'px';
+			for(var i = 0; i< images.length; i++){
+				images[i].width = leftDiv.width;
 			}
-			function reset(id){
-				clearCanvas();
-				imageObj = document.getElementById(id);
-				buffContext.drawImage(imageObj,0,0,buffer.width,buffer.height);
-				buffData = buffContext.getImageData(0,0,buffer.width,buffer.height);
-			}
-			
-			
-			
-			function main() {
-
-				if(imageObj.height == 0 && imageObj.width == 0){
-					imageObj.height = "164";
-					imageObj.width = "219";
-				}
-				ratio = imageObj.height*1.0/imageObj.width;
-				width = Math.floor(window.innerWidth * 0.62);
-				height = Math.floor(width * ratio);
-				leftDiv.width = window.innerWidth * 0.18 ;
-				rightDiv.width = leftDiv.width;
-				leftDiv.height = window.innerHeight;
-				rightDiv.height = window.innerHeight;
-				leftDiv.style.width = window.innerWidth * 0.19  + 'px';
-				rightDiv.style.width = leftDiv.width + 'px';
-				leftDiv.style.height = window.innerHeight + 'px';
-				rightDiv.style.height = window.innerHeight + 'px';
-				for(var i = 0; i< images.length; i++){
-					images[i].width = leftDiv.width;
-				}
 				
-				buffer.width = width;
-				buffer.height = height;
-				output.width = buffer.width;
-				output.height = buffer.height;
-				
-                clearCanvas();
-				buffContext.drawImage(imageObj,0,0,buffer.width,buffer.height);
-				buffData = buffContext.getImageData(0,0,buffer.width,buffer.height);
-				$("#right").mCustomScrollbar({
-					scrollButtons:{
-						enable:true
-					}
-				});
-                drawFrame(); //start the animation loop
-
-            }
+			buffer.width = width;
+			buffer.height = height;
+			output.width = buffer.width;
+			output.height = buffer.height;
+                	clearCanvas();
+			buffContext.drawImage(imageObj,0,0,buffer.width,buffer.height);
+			buffData = buffContext.getImageData(0,0,buffer.width,buffer.height);
+			$("#right").mCustomScrollbar({
+				scrollButtons:{
+				enable:true}
+			});
+                	drawFrame(); //start the animation loop
+            	}
 
 		$(window).load(function(){
 			main();
