@@ -3,7 +3,7 @@
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <meta charset="utf-8">
-        <title>OilPaint</title>
+        <title>Canvas Draw</title>
 	<script src = "jquery-1.9.1.min.js"></script>
         <script src = 'canvas2image.js'></script>
 	<script src = 'base64.js'></script>
@@ -68,7 +68,7 @@
 		<li><img class = "image" onclick="reset('fall')" id="fall" src = "fall.jpg" /></li>
 		<li><img class = "image" onclick="reset('lake')" id="lake" src = "lake.jpg"/></li>
 		<li><img class = "image" onclick="reset('download')" id="download" src = "download.jpg" /></li>
-			
+
 <!-- 			<li id = "addImg">
 				<h3>Add More</h3>
 				<p>Link:
@@ -88,18 +88,18 @@
 		imageObj = document.getElementById("cat"),
 		// addImg = document.getElementById("addImg"),
 		// addLink = document.getElementById("addLink"),
-				
+
 		buffContext = buffer.getContext('2d'),
 		outContext = output.getContext('2d'),
-		// mouse = animate.captureMouse('output'),
-		// touch = animate.captureMouse('output'),
+		mousePos = animate.captureMouse(output),
+		touchPos = animate.captureMouse(output),
 		width = 0, height = 0, margin = 20,
 		ratio = 0, buffData = '', outData = '',
 		brush = 'brush1', customId = 0,
 		brushSize = 50,
 		brushWidth = 5,
 		tolerance = 20,
-				
+
 		brush1 = {
 			streakAmount: 7,
 			brushSizeMax: 70,
@@ -109,7 +109,7 @@
 			toleranceMax: 50,
 			toleranceMin: 2,
 			rStrokeSize: 4},
-					
+
 		brush2 = {
 			streakAmount: 30,
 			brushSizeMax: 70,
@@ -119,7 +119,7 @@
 			toleranceMax: 50,
 			toleranceMin: 2,
 			rStrokeSize: 1},
-				
+
 		brush3 = {
 			streakAmount: 30,
 			brushSizeMax: 50,
@@ -129,47 +129,15 @@
 			toleranceMax: 50,
 			toleranceMin: 2,
 			rStrokeSize: 1},
-			
+
 		mouse = {
 			'x':undefined,
 			'y':undefined,
 			'prevX':undefined,
 			'prevY':undefined,
 			'moved':false
-                };
+        };
 
-            	output.onmousemove = function(event){
-                	mouse.moved = true;
-                	mouse.prevX = mouse.x;
-        		mouse.prevY = mouse.y;
-			var x, y,
-			body_scrollLeft = document.body.scrollLeft,
-			element_scrollLeft = document.documentElement.scrollLeft,
-			body_scrollTop = document.body.scrollTop,
-			element_scrollTop = document.documentElement.scrollTop,
-			offsetLeft = output.offsetLeft,
-			offsetTop = output.offsetTop;
-			if (event.pageX || event.pageY) {
-				x = event.pageX;
-				y = event.pageY;
-			} else {
-				x = event.clientX + body_scrollLeft + element_scrollLeft;
-				y = event.clientY + body_scrollTop + element_scrollTop;
-			}
-				x -= offsetLeft;
-				y -= offsetTop;
-	                mouse.x = x;
-	                mouse.y = y;
-			if(!$('#saveclear').isAnimated){
-				if( mouse.y < 100){
-					if((Math.abs(mouse.prevX - mouse.x) < 5
-					&& mouse.prevY - mouse.y > 10) || (mouse.y <= 1 && mouse.x < 150))
-					$('#saveclear').slideDown(500);
-				} else {
-					$('#saveclear').slideUp(500);
-				}
-			}
-		}
             
 		function addimg(){
 			var addli = document.createElement("li");
@@ -179,19 +147,47 @@
 			addli.innerHTML  = img;
 			rightDiv.insertBefore(addli, addImg);
 		}
-			
+
 		function setBrush(brushId){
 			brush = brushId;
 		}
 
+		function copyToMouse(){
+			if(mousePos.move){
+				mouse.x = mousePos.x;
+				mouse.y = mousePos.y;
+				mouse.prevX = mousePos.prevX;
+				mouse.prevY = mousePos.prevY;
+				mouse.moved = true;
+				mousePos.move = false;
+			} else if(touchPos.move){
+				mouse.x = touchPos.x;
+				mouse.y = touchPos.y;
+				mouse.prevX = touchPos.prevX;
+				mouse.prevY = touchPos.prevY;
+				mouse.moved = true;
+				touchPos.move = false;
+			}
+		}
+		
 		function drawFrame () {
 			window.requestAnimationFrame(drawFrame, output);	
+			copyToMouse();
                 	if(mouse.moved){
-                    		mouse.moved = false;
+                		mouse.moved = false;
+				if(!$('#saveclear').isAnimated){
+				if( mouse.y < 100){
+					if((Math.abs(mouse.prevX - mouse.x) < 5
+					&& mouse.prevY - mouse.y > 10) || (mouse.y <= 1 && mouse.x < 150))
+					$('#saveclear').slideDown(500);
+				} else {
+					$('#saveclear').slideUp(500);
+				}
+				}
                     		drawBrush();
                 	} 
                 }
-			
+
 		function drawBrush1(dDiff, color, x, y){
 			brushSize = Math.min(Math.max(dDiff * 2, brush1.brushSizeMin), brush1.brushSizeMax);
 			brushWidth = Math.min(brushSize/2, brush1.brushWidthMax);
@@ -212,9 +208,9 @@
 				x4 = x1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
 				y4 = y1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
 			} while (!compareColor(color, x4, y4) && --limit>0);
-				
+
 			brushWidth = Math.ceil(brushWidth * limit / 100.0);
-				
+
 			if (limit >= 0){
 				outContext.lineWidth = brush1.rStrokeSize;
                     		outContext.beginPath();
@@ -251,7 +247,7 @@
 				outContext.fill();
 			}
 		}
-			
+
 		function drawBrush2(dDiff, color, x, y){
 			brushSize = Math.min(Math.max(dDiff * 2, brush2.brushSizeMin), brush2.brushSizeMax);
 			brushWidth = Math.min(brushSize/2, brush2.brushWidthMax);
@@ -293,7 +289,7 @@
 				outContext.fill();
 			}
 		}
-			
+
 		function drawBrush3(dDiff, color, x, y){
 			brushSize = Math.min(Math.max(dDiff * 2, brush2.brushSizeMin), brush2.brushSizeMax);
 			tolerance = 10;
@@ -317,12 +313,12 @@
 				outContext.fill();
 			}
 		}
-		
+
 		function drawBrush(){
                 	var xDiff = mouse.x-mouse.prevX,
                     	    yDiff = mouse.y-mouse.prevY,
 			    dDiff = Math.floor(Math.sqrt(xDiff * xDiff + yDiff * yDiff)),
-			    
+
 			    x = Math.floor(mouse.x),
 		       	    y = Math.floor(mouse.y),
 			    index = x + (y * width),
@@ -330,7 +326,7 @@
 			    g = buffData.data[index * 4 + 1],
 			    b = buffData.data[index * 4 + 2],
 			    color = {'r':r, 'g':g, 'b':b};
-					
+
 			if(brush == 'brush1'){
 				drawBrush1(dDiff, color, x, y);
 			} else if(brush == 'brush2'){
@@ -339,7 +335,7 @@
 				drawBrush3(dDiff, color, x, y);
 			}
    		}
-			
+
 		function compareColor(color, x, y){
 			var index = x + (y*width);
                 	var red = buffData.data[index*4];
@@ -355,7 +351,7 @@
 				return false;
 			}
 		}
-			
+
 		function autoFill(){
 			outData = outContext.getImageData(0,0,buffer.width,buffer.height);
 			for(var i = 0; i < buffer.width; i++){
@@ -371,23 +367,23 @@
 			}
 			outContext.putImageData(outData, 0, 0);
 		}
-		
+
 		function save(){
 			var strDataURI = output.toDataURL();
 			Canvas2Image.saveAsPNG(output);
 		}
-		
+
 		function clearCanvas(){
 			outContext.clearRect(0, 0, buffer.width, buffer.height);
 		}
-		
+
 		function reset(id){
 			clearCanvas();
 			imageObj = document.getElementById(id);
 			buffContext.drawImage(imageObj,0,0,buffer.width,buffer.height);
 			buffData = buffContext.getImageData(0,0,buffer.width,buffer.height);
 		}
-			
+
 		function main() {
 			if(imageObj.height == 0 && imageObj.width == 0){
 				imageObj.height = "164";
@@ -407,7 +403,7 @@
 			for(var i = 0; i< images.length; i++){
 				images[i].width = leftDiv.width;
 			}
-				
+
 			buffer.width = width;
 			buffer.height = height;
 			output.width = buffer.width;
