@@ -91,7 +91,9 @@
 
 		buffContext = buffer.getContext('2d'),
 		outContext = output.getContext('2d'),
-		mousePos, touchPos,
+		mousePos = {x: 0, y: 0, prevX: 0, prevY: 0, event: null, move: false}, 
+		touchPos = {x: null, y: null, prevX: 0, prevY: 0, 
+      		isPressed: false, event: null, move: false},
 		width = 0, height = 0, margin = 20,
 		ratio = 0, buffData = '', outData = '',
 		brush = 'brush1', customId = 0,
