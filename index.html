@@ -91,8 +91,7 @@
 
 		buffContext = buffer.getContext('2d'),
 		outContext = output.getContext('2d'),
-		mousePos = animate.captureMouse(output),
-		touchPos = animate.captureMouse(output),
+		mousePos, touchPos,
 		width = 0, height = 0, margin = 20,
 		ratio = 0, buffData = '', outData = '',
 		brush = 'brush1', customId = 0,
@@ -415,6 +414,8 @@
 				scrollButtons:{
 				enable:true}
 			});
+			mousePos = animate.captureMouse(output),
+			touchPos = animate.captureMouse(output),
                 	drawFrame(); //start the animation loop
             	}
 
