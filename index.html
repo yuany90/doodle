@@ -154,20 +154,20 @@
 		}
 
 		function copyToMouse(){
-			if(mousePos.move){
-				mouse.x = mousePos.x;
-				mouse.y = mousePos.y;
-				mouse.prevX = mousePos.prevX;
-				mouse.prevY = mousePos.prevY;
-				mouse.moved = true;
-				mousePos.move = false;
-			} else if(touchPos.move){
+			if(touchPos.move){
 				mouse.x = touchPos.x;
 				mouse.y = touchPos.y;
 				mouse.prevX = touchPos.prevX;
 				mouse.prevY = touchPos.prevY;
 				mouse.moved = true;
 				touchPos.move = false;
+			} else if(mousePos.move){
+				mouse.x = mousePos.x;
+				mouse.y = mousePos.y;
+				mouse.prevX = mousePos.prevX;
+				mouse.prevY = mousePos.prevY;
+				mouse.moved = true;
+				mousePos.move = false;
 			}
 		}
 		
