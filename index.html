@@ -2,7 +2,6 @@
 <html>
 	<head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0, user-scalable=no">
         <meta charset="utf-8">
         <title>Canvas Draw</title>
 	<script src = "jquery-1.9.1.min.js"></script>
@@ -81,7 +80,7 @@
 	<div style="clean:both"></div>
 
         <script type="text/javascript">
-            var buffer = document.getElementById("buffer"),
+		var buffer = document.getElementById("buffer"),
 		output = document.getElementById("output"),
 		leftDiv = document.getElementById("left");
 		rightDiv = document.getElementById("right");
@@ -92,9 +91,8 @@
 
 		buffContext = buffer.getContext('2d'),
 		outContext = output.getContext('2d'),
-		mousePos = {x: 0, y: 0, prevX: 0, prevY: 0, event: null, move: false}, 
-		touchPos = {x: null, y: null, prevX: 0, prevY: 0, 
-      		isPressed: false, event: null, move: false},
+		mouse = {},
+		touch = {},
 		width = 0, height = 0, margin = 20,
 		ratio = 0, buffData = '', outData = '',
 		brush = 'brush1', customId = 0,
@@ -132,12 +130,11 @@
 			toleranceMin: 2,
 			rStrokeSize: 1},
 
-		mouse = {
+		doodle = {
 			'x':undefined,
 			'y':undefined,
 			'prevX':undefined,
 			'prevY':undefined,
-			'moved':false
         };
 
             
@@ -154,41 +151,47 @@
 			brush = brushId;
 		}
 
-		function copyToMouse(){
-			if(touchPos.move){
-				mouse.x = touchPos.x;
-				mouse.y = touchPos.y;
-				mouse.prevX = touchPos.prevX;
-				mouse.prevY = touchPos.prevY;
-				mouse.moved = true;
-				touchPos.move = false;
-			} else if(mousePos.move){
-				mouse.x = mousePos.x;
-				mouse.y = mousePos.y;
-				mouse.prevX = mousePos.prevX;
-				mouse.prevY = mousePos.prevY;
-				mouse.moved = true;
-				mousePos.move = false;
-			}
+		function copyToDoodle(pos){
+			doodle.x = pos.x;
+			doodle.y = pos.y;
+			doodle.prevX = pos.prevX;
+			doodle.prevY = pos.prevY;
 		}
 		
 		function drawFrame () {
 			window.requestAnimationFrame(drawFrame, output);	
-			copyToMouse();
-                	if(mouse.moved){
-                		mouse.moved = false;
+			//touches
+			if(mouse.move){
+				mouse.move = false;
 				if(!$('#saveclear').isAnimated){
-				if( mouse.y < 100){
-					if((Math.abs(mouse.prevX - mouse.x) < 5
-					&& mouse.prevY - mouse.y > 10) || (mouse.y <= 1 && mouse.x < 150))
-					$('#saveclear').slideDown(500);
-				} else {
-					$('#saveclear').slideUp(500);
+					if( mouse.y < 100){
+						if((Math.abs(mouse.prevX - mouse.x) < 5
+						&& mouse.prevY - mouse.y > 10) || (mouse.y <= 1 && mouse.x < 150))
+						$('#saveclear').slideDown(500);
+					} else {
+						$('#saveclear').slideUp(500);
+					}
 				}
+				copyToDoodle(mouse);
+				drawBrush();
+			} else if(touches.length > 0){
+				for(var i = 0; i < touches.length; i++){
+					if(touch[i] != undefined && touch[i].move){
+						if(!$('#saveclear').isAnimated){
+							if(touch[i].y <= 100){
+								if(touch[i].y <= 2){
+									$('#saveclear').slideDown(500);
+								}
+							} else {
+								$('#saveclear').slideUp(500);
+							}
+						}
+					}
+					copyToDoodle(touches[i]);
+					drawBrush();
 				}
-                    		drawBrush();
-                	} 
-                }
+			}
+		}
 
 		function drawBrush1(dDiff, color, x, y){
 			brushSize = Math.min(Math.max(dDiff * 2, brush1.brushSizeMin), brush1.brushSizeMax);
@@ -215,33 +218,33 @@
 
 			if (limit >= 0){
 				outContext.lineWidth = brush1.rStrokeSize;
-                    		outContext.beginPath();
-                    		outContext.moveTo(x1,y1);
-                    		outContext.bezierCurveTo(x2,y2,x3,y3,x4,y4);
-                    		outContext.stroke();
+				outContext.beginPath();
+				outContext.moveTo(x1,y1);
+				outContext.bezierCurveTo(x2,y2,x3,y3,x4,y4);
+				outContext.stroke();
 				for (var i=0; i<brush1.streakAmount; i++){
-                        		var _x1 = x1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        		var _y1 = y1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        		var _x2 = x2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        		var _y2 = y2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                			var _x3 = x3 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        		var _y3 = y3 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        		var _x4 = x4 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-                        		var _y4 = y4 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					var _x1 = x1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					var _y1 = y1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					var _x2 = x2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					var _y2 = y2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					var _x3 = x3 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					var _y3 = y3 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					var _x4 = x4 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					var _y4 = y4 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
 					if (compareColor(color, _x1, _y1) && compareColor(color, _x2, _y2)
 					&& compareColor(color, _x3, _y3) && compareColor(color, _x4, _y4)){
-					var _index = _x1 + (_y1 * width);
-					var _r = buffData.data[_index * 4];
-					var _g = buffData.data[_index * 4 + 1];
-					var _b = buffData.data[_index * 4 + 2];
-					outContext.strokeStyle = 'rgb(' + _r + ',' + _g + ',' + _b + ')';
-                        		outContext.beginPath();
-                        		outContext.moveTo(_x1,_y1);
-                        		outContext.bezierCurveTo(_x2,_y2,_x3,_y3,_x4,_y4);
-					outContext.closePath();
-                        		outContext.stroke();
+						var _index = _x1 + (_y1 * width);
+						var _r = buffData.data[_index * 4];
+						var _g = buffData.data[_index * 4 + 1];
+						var _b = buffData.data[_index * 4 + 2];
+						outContext.strokeStyle = 'rgb(' + _r + ',' + _g + ',' + _b + ')';
+						outContext.beginPath();
+						outContext.moveTo(_x1,_y1);
+						outContext.bezierCurveTo(_x2,_y2,_x3,_y3,_x4,_y4);
+						outContext.closePath();
+						outContext.stroke();
 					}
-                    		}
+				}
 			} else {
 				outContext.beginPath();
 				outContext.arc(x, y, 2, 0, (Math.PI * 2), true);
@@ -259,17 +262,17 @@
 			var x1 = x, y1 = y, limit = 100;
 			var x2, y2, x3, y3;
 			do {
-	                      x2 = x1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
-	                      y2 = y1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
+				x2 = x1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
+				y2 = y1 + Math.floor(Math.random() * brushSize* 2 - brushSize);
 			} while (!compareColor(color, x2, y2) && --limit>0);
 			brushWidth = Math.ceil(brushWidth * limit / 100.0);
 			if (limit >= 0){
 				outContext.lineWidth = brush2.rStrokeSize;
 				for (var i=0; i<brush2.streakAmount; i++){
 					var _x1 = x1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-		                        var _y1 = y1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-		                        var _x2 = x2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
-		                        var _y2 = y2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					var _y1 = y1 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					var _x2 = x2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
+					var _y2 = y2 + Math.floor(Math.random() * brushWidth* 2 - brushWidth);
 					if(compareColor(color, _x1, _y1)
 					&& compareColor(color, _x2, _y2)){
 					var _index = _x1 + (_y1 * width);
@@ -317,12 +320,12 @@
 		}
 
 		function drawBrush(){
-                	var xDiff = mouse.x-mouse.prevX,
-                    	    yDiff = mouse.y-mouse.prevY,
+			var xDiff = doodle.x - doodle.prevX,
+				yDiff = doodle.y - doodle.prevY,
 			    dDiff = Math.floor(Math.sqrt(xDiff * xDiff + yDiff * yDiff)),
 
-			    x = Math.floor(mouse.x),
-		       	    y = Math.floor(mouse.y),
+			    x = Math.floor(doodle.x),
+				y = Math.floor(doodle.y),
 			    index = x + (y * width),
 			    r = buffData.data[index * 4],
 			    g = buffData.data[index * 4 + 1],
@@ -340,9 +343,9 @@
 
 		function compareColor(color, x, y){
 			var index = x + (y*width);
-                	var red = buffData.data[index*4];
-                	var green = buffData.data[index*4+1];
-                	var blue = buffData.data[index*4+2];
+			var red = buffData.data[index*4];
+			var green = buffData.data[index*4+1];
+			var blue = buffData.data[index*4+2];
 			if(red <= color.r + tolerance && red >= color.r - tolerance
 			&& green <= color.g + tolerance && green >= color.g - tolerance
 			&& blue <= color.b +tolerance && blue >= color.b - tolerance
@@ -417,10 +420,10 @@
 				scrollButtons:{
 				enable:true}
 			});
-			mousePos = animate.captureMouse(output),
-			touchPos = animate.captureMouse(output),
-                	drawFrame(); //start the animation loop
-            	}
+			mouse = animate.captureMouse(output);
+			touches = animate.captureMouse(output);
+			drawFrame(); //start the animation loop
+        }
 
 		$(window).load(function(){
 			main();
