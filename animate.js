@@ -131,6 +131,7 @@ window.animate.captureTouch = function (element) {
         touch.move = true;
       }
     }
+    console.log("touchmove");
   }, false);
   
   return touches;
