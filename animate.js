@@ -130,8 +130,6 @@ window.animate.captureTouch = function (element) {
       }
       var touch = {'x': pos.x, 'y': pos.y, 'prevX': prevX, 'prevY': prevY, 
       'move': true};
-      touch.prevX = prevPos.x;
-      touch.prevY = prevPos.y;
       touches[touch_event.identifier] = touch;
     }
   }, false);
