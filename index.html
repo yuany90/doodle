@@ -188,6 +188,7 @@
 							}
 						}
 					}
+					touch[i].move = false;
 					copyToDoodle(touches[i]);
 					drawBrush();
 				}
@@ -422,7 +423,7 @@
 				enable:true}
 			});
 			mouse = animate.captureMouse(output);
-			touches = animate.captureMouse(output);
+			touches = animate.captureTouch(output);
 			drawFrame(); //start the animation loop
         }
 
