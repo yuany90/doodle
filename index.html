@@ -136,7 +136,7 @@
 			'y':undefined,
 			'prevX':undefined,
 			'prevY':undefined,
-        };
+		};
 
             
 		function addimg(){
@@ -177,17 +177,17 @@
 				drawBrush();
 			} else if(touches.length > 0){
 				for(var i = 0; i < touches.length; i++){
-					if(touch[i] != undefined && touch[i].move){
+					if(touches[i] != undefined && touches[i].move){
 						if(!$('#saveclear').isAnimated){
-							if(touch[i].y <= 100){
-								if(touch[i].y <= 2){
+							if(touches[i].y <= 100){
+								if(touches[i].y <= 2){
 									$('#saveclear').slideDown(500);
 								}
 							} else {
 								$('#saveclear').slideUp(500);
 							}
 						}
-					touch[i].move = false;
+					touches[i].move = false;
 					copyToDoodle(touches[i]);
 					drawBrush();
 					}
