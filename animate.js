@@ -107,10 +107,6 @@ window.animate.captureTouch = function (element) {
   }, false);
 
   element.addEventListener('touchend', function (event) {
-    touch.isPressed = false;
-    touch.x = null;
-    touch.y = null;
-    touch.event = event;
   }, false);
   
   element.addEventListener('touchmove', function (event) {
