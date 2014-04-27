@@ -104,6 +104,7 @@ window.animate.captureTouch = function (element) {
       move: false};
       touches[touch_event.identifier] = touch;
     }
+    event.preventDefault();//important
   }, false);
 
   element.addEventListener('touchend', function (event) {
@@ -131,7 +132,8 @@ window.animate.captureTouch = function (element) {
         touch.move = true;
       }
     }
-    console.log("touchmove");
+    event.preventDefault();
+    //console.log("touchmove");
   }, false);
   
   return touches;
