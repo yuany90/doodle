@@ -121,12 +121,15 @@ window.animate.captureTouch = function (element) {
       var prevX = 0;
       var prevY = 0;
       if(touches[touch_event.identifier] != undefined){
-        prevX = touches[touch_event.identifier].x;
-        prevY = touches[touch_event.identifier].y
+        var touch = touches[touch_event.identifier];
+        prevX = touch.x;
+        prevY = touch.y
+        touch.x = pos.x;
+        touch.y = pos.y;
+        touch.prevX = prevX;
+        touch.prevY = prevY;
+        touch.move = true;
       }
-      var touch = {'x': pos.x, 'y': pos.y, 'prevX': prevX, 'prevY': prevY, 
-      'move': true};
-      touches[touch_event.identifier] = touch;
     }
   }, false);
   
